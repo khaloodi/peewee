@@ -92,6 +92,16 @@ def index():
     stream = models.Post.select().limit(100) #check peewee docs for pagination
     return render_template('stream.html', stream=stream)
 
+@app.route('/stream')
+@app.route('/stream/<username>')
+def stream(username=None):
+    template = 'stream.html' #default is w/o username, you will see your stream and posts of you and people you follow 
+    if username and username != current_user.username: #if there is a user name you get that user's posts
+        user = models.User.select().where(models.User.username**username).get() #the ** represents is 'LIKE' username, comparison that is not case sensitive
+        stream = user.posts.limit(100)
+    else: #in other words it's us that is logged in
+
+
 
 if __name__ == '__main__':
     models.initialize()
