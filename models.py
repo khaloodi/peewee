@@ -1,6 +1,4 @@
-from dataclasses import dataclass
 from datetime import datetime
-from email.policy import default
 
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -44,8 +42,9 @@ class User(UserMixin, Model): #mixins are like chocolate chips, we put them befo
 class Post(Model):
     timestamp = DateTimeField(default=datetime.now)
     user = ForeignKeyField(
-        rel_model=User, #model that this foreign key points to, e.g. User model
-        related_name='posts', #what the related model would call this model... if you're a user, what do you call the post model you created.. 'posts'
+        # rel_model= User ... for some reason this isn't working, I just use User below and it runs
+        User, #model that this foreign key points to, e.g. User model
+        related_name='posts' #what the related model would call this model... if you're a user, what do you call the post model you created.. 'posts'
     )
     content = TextField()
 
