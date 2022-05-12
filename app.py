@@ -89,7 +89,8 @@ def post():
 
 @app.route('/')
 def index():
-    return 'Hey'
+    stream = models.Post.select().limit(100) #check peewee docs for pagination
+    return render_template('stream.html', stream=stream)
 
 
 if __name__ == '__main__':
