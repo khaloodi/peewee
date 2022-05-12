@@ -31,11 +31,11 @@ This is a fun terminal application that allows a user to create and store notes 
 
 ### Students
 
-A minimal Flask application. Running this file will create a local Students database and associated Student table. The table is populated with 5 student users and we simply log out the top student to the consule using the peewee ORM. 
+A minimal Flask application that creates a local Students database and associated Student table. The table is populated with 5 student users and logs out the top performing student to the console. 
 
 **Built With**
 - [Python](https://www.python.org/)
 - [Flask](https://flask.palletsprojects.com/en/2.1.x/)
-- [Peewee](http://docs.peewee-orm.com/en/latest/)
+- [peewee](http://docs.peewee-orm.com/en/latest/)
 - [Jinja2](https://pypi.org/project/Jinja2/)
 - [WTForms](https://wtforms.readthedocs.io/en/3.0.x/)
