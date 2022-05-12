@@ -100,7 +100,11 @@ def stream(username=None):
         user = models.User.select().where(models.User.username**username).get() #the ** represents is 'LIKE' username, comparison that is not case sensitive
         stream = user.posts.limit(100)
     else: #in other words it's us that is logged in
-
+        user = current_user
+        stream = current_user.get_stream().limit(100)
+    if username:
+        template = 'user_stream.html'
+    return render_template(template, user=user, stream=stream)
 
 
 if __name__ == '__main__':
