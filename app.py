@@ -109,7 +109,7 @@ def stream(username=None):
 
 if __name__ == '__main__':
     models.initialize()
-    try:
+    try:        
         models.User.create_user( #creating a user for myself; using create_user and not create b/c that encrypts password
             username='kennethlove',
             email='kenneth@teamtreehouse.com',
