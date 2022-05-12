@@ -20,10 +20,10 @@ Run the following command in terminal while in main directory:
 
 A social media application built with Flask. Contains a login and registration page. Users are stored in a local SQLite database. Password verification and form validation are enforced as well.
 
-Routes:
-- '/' index
-- '/login' login page
-- '/register' registration page
+    Routes:
+    - '/' index
+    - '/login' login page
+    - '/register' registration page
 
 ### Diary
 
@@ -35,7 +35,7 @@ A minimal Flask application. Running this file will create a local Students data
 
 **Built With**
 - [Python](https://www.python.org/)
-- [Flask](hhttps://flask.palletsprojects.com/en/2.1.x/)
+- [Flask](https://flask.palletsprojects.com/en/2.1.x/)
 - [Peewee](http://docs.peewee-orm.com/en/latest/)
 - [Jinja2](https://pypi.org/project/Jinja2/)
 - [WTForms](https://wtforms.readthedocs.io/en/3.0.x/)
