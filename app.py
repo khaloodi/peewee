@@ -122,10 +122,27 @@ def follow(username):
         except models.IntegrityError: #this occurs b/c unique constraint; e.g. if we are creating a user that already exists
             pass
         else:
-            flash('You\'re now following {to_user.username}!', 'success')
+            flash(f'You\'re now following {to_user.username}!', 'success')
     return redirect(url_for('stream', username=to_user.username))
 
-
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    try: #find the user
+        to_user = models.User.get(models.User.username**username) #try and grab username LIKE username passed in, store record in to_user... like is case insensitive
+    except models.DoesNotExist: #if that user doesn't exist, do something
+        pass
+    else: #otherwise the user does exist
+        try: #therefore we create a record in Relationships
+            models.Relationship.get( #get a specific relationship instead of creating one like in follow
+                from_user=g.user._get_current_object(), #current user is me
+                to_user=to_user 
+            ).delete() #delte this relationship from Relationship table
+        except models.IntegrityError: #this occurs b/c unique constraint; e.g. if we are creating a user that already exists
+            pass
+        else:
+            flash(f'You\'ve unfollowed {to_user.username}!', 'success')
+    return redirect(url_for('stream', username=to_user.username))
 
 if __name__ == '__main__':
     models.initialize()
