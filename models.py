@@ -82,7 +82,7 @@ class Relationship(Model):
     class Meta:
         database = DATABASE
         index = ( #allows us to specify how to find data as well as define a unique index, each index is a tuple
-            (('from_user', 'to_user'), True) #true states that UNIQUE is required
+            (('from_user', 'to_user'), True), #true states that UNIQUE is required
         )
 
 def initialize():
