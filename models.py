@@ -24,6 +24,7 @@ class User(UserMixin, Model): #mixins are like chocolate chips, we put them befo
 
     def get_stream(self):
         return Post.select().where(
+            (Post.user << self.following()) | #find all posts which are "<<"::"inside the set of" posts of people I follow
             (Post.user == self)
         )
 
