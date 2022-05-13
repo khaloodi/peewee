@@ -157,7 +157,7 @@ def unfollow(username):
             flash(f'You\'ve unfollowed {to_user.username}!', 'success')
     return redirect(url_for('stream', username=to_user.username))
 
-@app.error_handler(404)
+@app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404 #sends back status code 404 to render
 
