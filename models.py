@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import index
 
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -24,6 +25,27 @@ class User(UserMixin, Model): #mixins are like chocolate chips, we put them befo
     def get_stream(self):
         return Post.select().where(
             (Post.user == self)
+        )
+
+    def following(self):
+        """The users we are following."""
+        return (
+            User.select().join( # select all the users 
+                Relationship, on=Relationship.to_user  # all the to_user's...
+                # ^model .... ^key we're joining on
+            ).where(
+                Relationship.from_user == self # ...where the relationship is me
+            )#^filter for: WHERE user = ME
+        )
+
+    def followers(self):
+        """Get users following the current user."""
+        return (
+            User.select().join(
+                Relationship, on=Relationship.from_user
+            ).where(
+                Relationship.to_user == self # reverse of following
+            )
         )
 
     @classmethod #a method that belongs to a class, that can create the class it belongs to 
@@ -53,7 +75,17 @@ class Post(Model):
         database = DATABASE
         order_by = ('-timestamp',) #display newest items first, because those items are tuples, we need to make sure we include the comma
 
+class Relationship(Model):
+    from_user = ForeignKeyField(User, related_name=('relationships'))#who are the people related to me
+    to_user = ForeignKeyField(User, related_name=('related_to'))#who are the people I'm related to
+
+    class Meta:
+        database = DATABASE
+        index = ( #allows us to specify how to find data as well as define a unique index, each index is a tuple
+            (('from_user', 'to_user'), True) #true states that UNIQUE is required
+        )
+
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Post], safe=True)
+    DATABASE.create_tables([User, Post, Relationship], safe=True)
     DATABASE.close()
