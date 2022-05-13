@@ -1,5 +1,6 @@
 from crypt import methods
-from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask import (Flask, g, render_template, flash, redirect,
+                    abort, url_for)
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
@@ -97,8 +98,13 @@ def index():
 def stream(username=None):
     template = 'stream.html' #default is w/o username, you will see your stream and posts of you and people you follow 
     if username and username != current_user.username: #if there is a user name you get that user's posts
-        user = models.User.select().where(models.User.username**username).get() #the ** represents is 'LIKE' username, comparison that is not case sensitive
-        stream = user.posts.limit(100)
+        try:
+            user = models.User.select().where(
+                models.User.username**username).get() #the ** represents is 'LIKE' username, comparison that is not case sensitive
+        except models.DoesNotExist:
+            abort(404) #if user doesn't exist
+        else:
+            stream = user.posts.limit(100)
     else: #in other words it's us that is logged in
         user = current_user
         stream = current_user.get_stream().limit(100)
@@ -109,6 +115,8 @@ def stream(username=None):
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
     posts = models.Post.select().where(models.Post.id == post_id) #interesting, I didn't create a specific id, looks like this is included
+    if posts.count() == 0:
+        abort(404)
     return render_template('stream.html', stream=posts)
 
 @app.route('/follow/<username>')
@@ -125,7 +133,7 @@ def follow(username):
                 to_user=to_user #to user is the user I want to follow
             )
         except models.IntegrityError: #this occurs b/c unique constraint; e.g. if we are creating a user that already exists
-            pass
+            abort(404)
         else:
             flash(f'You\'re now following {to_user.username}!', 'success')
     return redirect(url_for('stream', username=to_user.username))
@@ -144,10 +152,14 @@ def unfollow(username):
                 to_user=to_user 
             ).delete() #delte this relationship from Relationship table
         except models.IntegrityError: #this occurs b/c unique constraint; e.g. if we are creating a user that already exists
-            pass
+            abort(404)
         else:
             flash(f'You\'ve unfollowed {to_user.username}!', 'success')
     return redirect(url_for('stream', username=to_user.username))
+
+@app.error_handler(404)
+def not_found(error):
+    return render_template('404.html'), 404 #sends back status code 404 to render
 
 if __name__ == '__main__':
     models.initialize()
